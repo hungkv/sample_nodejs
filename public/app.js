@@ -24,7 +24,7 @@ const loginHTML = `<main class="login container">
     <div class="col-12 col-6-tablet push-3-tablet col-4-desktop push-4-desktop">
       <form class="form">
         <fieldset>
-          <input class="block" type="email" name="email" placeholder="email">
+          <input class="block" type="text" name="name" placeholder="User Name">
         </fieldset>
         <fieldset>
           <input class="block" type="password" name="password" placeholder="password">
@@ -63,7 +63,7 @@ const chatHTML = `<main class="flex flex-column">
     <div class="flex flex-column col col-9">
       <main class="chat flex flex-column flex-1 clear"></main>
       <form class="flex flex-row flex-space-between" id="send-message">
-        <input type="text" name="content" class="flex flex-1">
+        <input type="text" name="text" class="flex flex-1">
         <button class="button-primary" type="submit">Send</button>
       </form>
     </div>
@@ -78,7 +78,7 @@ const addUser = user => {
     // Add the user to the list
     userList.insertAdjacentHTML('beforeend', `<li>
       <a class="block relative" href="#">
-        <span class="absolute username">${user.email}</span>
+        <span class="absolute username">${user.name}</span>
       </a>
     </li>`);
 
@@ -120,7 +120,7 @@ const showChat = async () => {
 const addMessage = message => {
   // Find the user belonging to this message or use the anonymous user if not found
   const chat = document.querySelector('.chat');
-  const content = message.content
+  const text = message.text
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
@@ -130,7 +130,7 @@ const addMessage = message => {
         <p class="message-header">
           <span class="sent-date font-300">${moment(message.createdAt).format('MMM Do, hh:mm:ss')}</span>
         </p>
-        <p class="message-content font-300">${content}</p>
+        <p class="message-content font-300">${text}</p>
       </div>
     </div>`);
 
@@ -141,13 +141,13 @@ const addMessage = message => {
 document.addEventListener('submit', async ev => {
   if(ev.target.id === 'send-message') {
     // This is the message text input field
-    const input = document.querySelector('[name="content"]');
+    const input = document.querySelector('[name="text"]');
     const room_id = 1
     ev.preventDefault();
 
     // Create a new message and then clear the input field
     await client.service('messages').create({
-      content: input.value,
+      text: input.value,
       room_id: room_id
     });
 
@@ -158,7 +158,7 @@ document.addEventListener('submit', async ev => {
 // Retrieve email/password object from the login/signup page
 const getCredentials = () => {
   const user = {
-    email: document.querySelector('[name="email"]').value,
+    name: document.querySelector('[name="name"]').value,
     password: document.querySelector('[name="password"]').value
   };
 
@@ -218,4 +218,5 @@ document.addEventListener('click', async ev => {
 
 client.service('messages').on('created', addMessage);
 client.service('users').on('created', addUser);
+
 login();

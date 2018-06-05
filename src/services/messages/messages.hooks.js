@@ -1,11 +1,13 @@
 
 
+const customMessage = require('../../hooks/custom-message');
+
 module.exports = {
   before: {
     all: [],
     find: [],
     get: [],
-    create: [],
+    create: [customMessage()],
     update: [],
     patch: [],
     remove: []
